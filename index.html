@@ -3,72 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON Data Viewer</title>
+    <title>Data JSON Viewer</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            background-color: #f5f5f5;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
         }
-        table, th, td {
+        .card {
+            background: #fff;
             border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        th, td {
-            padding: 10px;
-            text-align: left;
+        .card img {
+            width: 100%;
+            height: auto;
         }
-        th {
-            background-color: #f4f4f4;
+        .card-body {
+            padding: 15px;
+        }
+        .card-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .card-meta {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .card-story {
+            font-size: 0.9em;
+            color: #444;
+            margin-bottom: 10px;
+        }
+        .card-status {
+            font-size: 0.85em;
+            font-weight: bold;
+            color: #007BFF;
         }
     </style>
 </head>
 <body>
-    <h1>Data JSON</h1>
-    <p>Berikut adalah data dari file JSON:</p>
-    <table id="jsonTable">
-        <thead>
-            <tr>
-                <!-- Header akan diisi otomatis -->
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Data akan diisi otomatis -->
-        </tbody>
-    </table>
+    <h1>Daftar Judul</h1>
+    <div class="card-container" id="cardContainer"></div>
 
     <script>
-        // Path file JSON
-        const jsonUrl = "D:\Kuliah\Semester 5\projectJSON\output.json"; // Ganti dengan URL file JSON Anda
+        const jsonUrl = "../output.json"; // Ganti dengan path file JSON Anda
 
         // Ambil data JSON
         fetch(jsonUrl)
             .then(response => response.json())
             .then(data => {
-                // Ambil elemen tabel
-                const tableHead = document.querySelector("#jsonTable thead tr");
-                const tableBody = document.querySelector("#jsonTable tbody");
+                const container = document.getElementById("cardContainer");
+                
+                data.forEach(item => {
+                    // Buat elemen kartu
+                    const card = document.createElement("div");
+                    card.className = "card";
+                    
+                    // Tambahkan gambar
+                    const img = document.createElement("img");
+                    img.src = item.img;
+                    img.alt = item.title;
 
-                // Ambil kunci dari objek pertama sebagai header tabel
-                const keys = Object.keys(data[0]);
-                keys.forEach(key => {
-                    const th = document.createElement("th");
-                    th.textContent = key;
-                    tableHead.appendChild(th);
-                });
+                    // Tambahkan badan kartu
+                    const cardBody = document.createElement("div");
+                    cardBody.className = "card-body";
 
-                // Tambahkan data ke dalam tabel
-                data.forEach(row => {
-                    const tr = document.createElement("tr");
-                    keys.forEach(key => {
-                        const td = document.createElement("td");
-                        td.textContent = row[key];
-                        tr.appendChild(td);
-                    });
-                    tableBody.appendChild(tr);
+                    // Tambahkan judul
+                    const title = document.createElement("div");
+                    title.className = "card-title";
+                    title.textContent = item.title;
+
+                    // Tambahkan metadata
+                    const meta = document.createElement("div");
+                    meta.className = "card-meta";
+                    meta.textContent = `Penulis: ${item.author}`;
+
+                    // Tambahkan cerita
+                    const story = document.createElement("div");
+                    story.className = "card-story";
+                    story.textContent = item.story;
+
+                    // Tambahkan status
+                    const status = document.createElement("div");
+                    status.className = "card-status";
+                    status.textContent = `Status: ${item.status}`;
+
+                    // Gabungkan elemen-elemen ke kartu
+                    cardBody.appendChild(title);
+                    cardBody.appendChild(meta);
+                    cardBody.appendChild(story);
+                    cardBody.appendChild(status);
+                    card.appendChild(img);
+                    card.appendChild(cardBody);
+
+                    // Tambahkan kartu ke container
+                    container.appendChild(card);
                 });
             })
             .catch(error => {
