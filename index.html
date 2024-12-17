@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Data Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Data JSON</h1>
+    <p>Berikut adalah data dari file JSON:</p>
+    <table id="jsonTable">
+        <thead>
+            <tr>
+                <!-- Header akan diisi otomatis -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data akan diisi otomatis -->
+        </tbody>
+    </table>
+
+    <script>
+        // Path file JSON
+        const jsonUrl = "D:\Kuliah\Semester 5\projectJSON\output.json"; // Ganti dengan URL file JSON Anda
+
+        // Ambil data JSON
+        fetch(jsonUrl)
+            .then(response => response.json())
+            .then(data => {
+                // Ambil elemen tabel
+                const tableHead = document.querySelector("#jsonTable thead tr");
+                const tableBody = document.querySelector("#jsonTable tbody");
+
+                // Ambil kunci dari objek pertama sebagai header tabel
+                const keys = Object.keys(data[0]);
+                keys.forEach(key => {
+                    const th = document.createElement("th");
+                    th.textContent = key;
+                    tableHead.appendChild(th);
+                });
+
+                // Tambahkan data ke dalam tabel
+                data.forEach(row => {
+                    const tr = document.createElement("tr");
+                    keys.forEach(key => {
+                        const td = document.createElement("td");
+                        td.textContent = row[key];
+                        tr.appendChild(td);
+                    });
+                    tableBody.appendChild(tr);
+                });
+            })
+            .catch(error => {
+                console.error("Error loading JSON:", error);
+            });
+    </script>
+</body>
+</html>
