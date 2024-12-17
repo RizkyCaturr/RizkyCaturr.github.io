@@ -3,101 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Manhwa</title>
+    <title>Data JSON Viewer</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            line-height: 1.6;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
+            margin: 20px;
+            background-color: #f5f5f5;
         }
-        .container {
-            width: 80%;
-            margin: 20px auto;
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
             background: #fff;
-            padding: 20px;
+            border: 1px solid #ddd;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        h1 {
-            text-align: center;
+        .card img {
+            width: 100%;
+            height: auto;
         }
-        .manhwa {
-            display: flex;
-            border-bottom: 1px solid #ddd;
-            padding: 10px 0;
+        .card-body {
+            padding: 15px;
         }
-        .manhwa img {
-            max-width: 120px;
-            margin-right: 15px;
-            border-radius: 4px;
-        }
-        .manhwa-details {
-            flex: 1;
-        }
-        .manhwa h2 {
-            margin: 0;
+        .card-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
             color: #333;
         }
-        .status {
+        .card-meta {
             font-size: 0.9em;
-            color: green;
+            color: #666;
+            margin-bottom: 10px;
         }
-        .author {
+        .card-story {
             font-size: 0.9em;
-            color: #555;
+            color: #444;
+            margin-bottom: 10px;
+        }
+        .card-status {
+            font-size: 0.85em;
+            font-weight: bold;
+            color: #007BFF;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Daftar Manhwa</h1>
-        <div class="manhwa">
-            <img src="https://d40b35e2.delivery.rocketcdn.me/wp-content/uploads/2021/03/eleceed-956931-TSsUlrrh.jpg.webp" alt="Eleceed">
-            <div class="manhwa-details">
-                <h2>Eleceed</h2>
-                <p>Kaiden, pengguna kemampuan misterius dalam tubuh kucing, bertemu Jiwoo, anak SMA yang memiliki kemampuan spesial.</p>
-                <p class="status">Status: Ongoing</p>
-                <p class="author">Author: Son Jeho</p>
-            </div>
-        </div>
-        <div class="manhwa">
-            <img src="https://d40b35e2.delivery.rocketcdn.me/wp-content/uploads/2021/06/08-374020-cbiyLkVi.png" alt="Solo Leveling">
-            <div class="manhwa-details">
-                <h2>Solo Leveling</h2>
-                <p>Jinwoo Sung, hunter E-class yang paling lemah, menemukan kesempatan untuk mengubah hidupnya setelah memasuki dungeon tersembunyi.</p>
-                <p class="status">Status: Completed</p>
-                <p class="author">Author: Chugong, H-goon, KI Soryeong</p>
-            </div>
-        </div>
-        <div class="manhwa">
-            <img src="https://d40b35e2.delivery.rocketcdn.me/wp-content/uploads/2021/05/manhua-821002-yAQZQNai.gif" alt="Magic Emperor">
-            <div class="manhwa-details">
-                <h2>Magic Emperor</h2>
-                <p>Zhuo Yifan, kaisar iblis, dibunuh dan bereinkarnasi dalam tubuh anak pelayan keluarga Zhuo Fan.</p>
-                <p class="status">Status: Ongoing</p>
-                <p class="author">Author: Wuer Manhua Ye Xiao</p>
-            </div>
-        </div>
-        <div class="manhwa">
-            <img src="https://d40b35e2.delivery.rocketcdn.me/wp-content/uploads/2021/03/23-587365-WMDAnwJR.jpg" alt="Mercenary Enrollment">
-            <div class="manhwa-details">
-                <h2>Mercenary Enrollment</h2>
-                <p>Yu Ijin, mantan tentara bayaran, kembali ke keluarganya setelah bertahan hidup dari kecelakaan pesawat.</p>
-                <p class="status">Status: Ongoing</p>
-                <p class="author">Author: YC</p>
-            </div>
-        </div>
-        <div class="manhwa">
-            <img src="https://d40b35e2.delivery.rocketcdn.me/wp-content/uploads/2021/03/sss-class.jpg" alt="SSS-Class Suicide Hunter">
-            <div class="manhwa-details">
-                <h2>SSS-Class Suicide Hunter</h2>
-                <p>Gong-ja Kim mendapat keterampilan untuk meniru kemampuan orang lain setelah mengorbankan nyawanya. Kini ia berjuang mendaki puncak Menara misterius.</p>
-                <p class="status">Status: Ongoing</p>
-                <p class="author">Author: Tidak disebutkan</p>
-            </div>
-        </div>
-    </div>
+    <h1>Daftar Judul</h1>
+    <div class="card-container" id="cardContainer"></div>
+
+    <script>
+        const jsonUrl = "../output.json"; // Ganti dengan path file JSON Anda
+
+        // Ambil data JSON
+        fetch(jsonUrl)
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById("cardContainer");
+                
+                data.forEach(item => {
+                    // Buat elemen kartu
+                    const card = document.createElement("div");
+                    card.className = "card";
+                    
+                    // Tambahkan gambar
+                    const img = document.createElement("img");
+                    img.src = item.img;
+                    img.alt = item.title;
+
+                    // Tambahkan badan kartu
+                    const cardBody = document.createElement("div");
+                    cardBody.className = "card-body";
+
+                    // Tambahkan judul
+                    const title = document.createElement("div");
+                    title.className = "card-title";
+                    title.textContent = item.title;
+
+                    // Tambahkan metadata
+                    const meta = document.createElement("div");
+                    meta.className = "card-meta";
+                    meta.textContent = `Penulis: ${item.author}`;
+
+                    // Tambahkan cerita
+                    const story = document.createElement("div");
+                    story.className = "card-story";
+                    story.textContent = item.story;
+
+                    // Tambahkan status
+                    const status = document.createElement("div");
+                    status.className = "card-status";
+                    status.textContent = `Status: ${item.status}`;
+
+                    // Gabungkan elemen-elemen ke kartu
+                    cardBody.appendChild(title);
+                    cardBody.appendChild(meta);
+                    cardBody.appendChild(story);
+                    cardBody.appendChild(status);
+                    card.appendChild(img);
+                    card.appendChild(cardBody);
+
+                    // Tambahkan kartu ke container
+                    container.appendChild(card);
+                });
+            })
+            .catch(error => {
+                console.error("Error loading JSON:", error);
+            });
+    </script>
 </body>
 </html>
